@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
@@ -23,7 +24,7 @@ class DatabaseHelper {
 
   void _createDatabase(Database db, int version) async {
     // await Structure().RunTableSQLite(db);
-    await db.execute("CREATE TABLE task(id INTEGER primary key autoincrement, text TEXT, priority INTEGER, date_create DATETIME, date_programmed DATETIME, notifications DATETIME [], type TEXT [], tags INTEGER [])");
+    await db.execute("CREATE TABLE task(id INTEGER primary key autoincrement, text TEXT, color TEXT, priority INTEGER, date_create DATETIME, date_programmed DATETIME, notifications DATETIME [], type TEXT [], tags INTEGER [])");
     await db.execute("CREATE TABLE tags(id INTEGER primary key autoincrement, icon TEXT, title TEXT);");
   }
 
@@ -50,27 +51,22 @@ class DatabaseHelper {
     }
   }
 
-  // Future<User> getUserSQLite() async {
+  Future<List<Task>> getTask() async {
+    Database db = await database;
+    var result = await db.query("task");
+    return result.isNotEmpty ? result.map((c) => Task.fromMap(c)).toList() : [];
+  }
+
+  // Future<String> getCVV(String cardID) async {
   //   Database db = await database;
-  //   var result = await db.query("user");
-  //   List<User> list = result.isNotEmpty ? result.map((c) => User.fromMapLocal(c)).toList() : [];
-  //   if (list.isNotEmpty) {
-  //     return list[0];
+  //   var result = await db.query("card", where: "cardid = '$cardID'");
+
+  //   if (result.length > 0) {
+  //     return result[0]['cvv'].toString();
   //   } else {
-  //     return User(0, "", "", "", "", 0, "", "", "", "");
+  //     return "";
   //   }
   // }
-
-  Future<String> getCVV(String cardID) async {
-    Database db = await database;
-    var result = await db.query("card", where: "cardid = '$cardID'");
-
-    if (result.length > 0) {
-      return result[0]['cvv'].toString();
-    } else {
-      return "";
-    }
-  }
 
   Future close() async {
     Database db = await database;
