@@ -1,44 +1,89 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:vexa_todo/Common/SQLiteHelper.dart';
+import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 
 class HomeScreenWidgets {
   Widget ListTaskViews() {
-    return ListView.builder(
-        itemCount: 2,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              ModalAddTask(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [Text("Andar com o cachorro", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)), Text("14:07 • Pets • Diaria", style: TextStyle(color: Colors.grey[600]))],
-                      )
-                    ],
+    return FutureBuilder<List<Task>>(
+      future: DatabaseHelper().getTask(),
+      builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    ModalAddTask(context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                                Text("14:07 • Pets • Diaria", style: TextStyle(color: Colors.grey[600]))
+                              ],
+                            )
+                          ],
+                        ),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+                          child: Icon(Icons.star, color: Colors.amber),
+                        )
+                      ],
+                    ),
                   ),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
-                    child: Icon(Icons.star, color: Colors.amber),
+                );
+              });
+        } else if (snapshot.hasError) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 370,
+              height: 100,
+              decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(10)),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.red,
+                    size: 60,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: Text('Error: ${snapshot.error}'),
                   )
                 ],
               ),
             ),
           );
-        });
+        } else {
+          return Padding(
+            // Estamos procurando pedidos
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 370,
+              height: 100,
+              decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(10)),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
+    );
   }
 
   ModalAddTask(BuildContext context) {
