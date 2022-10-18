@@ -1,13 +1,15 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:vexa_todo/Common/SQLiteHelper.dart';
+import 'package:vexa_todo/Screens/Home/Controller/HomeController.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
+import 'package:vexa_todo/Screens/Home/Models/TaskModels.dart';
+import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 class HomeScreenWidgets {
   Widget ListTaskViews() {
     return FutureBuilder<List<Task>>(
-      future: DatabaseHelper().getTask(),
+      future: TaskModels().GetTask(),
       builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
@@ -15,35 +17,38 @@ class HomeScreenWidgets {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    ModalAddTask(context);
+                    ModalAddTask(context, snapshot.data![index].types);
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CircleAvatar(),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
-                                Text("14:07 • Pets • Diaria", style: TextStyle(color: Colors.grey[600]))
-                              ],
-                            )
-                          ],
-                        ),
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
-                          child: Icon(Icons.star, color: Colors.amber),
-                        )
-                      ],
+                  child: Container(
+                    color: Colors.transparent,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircleAvatar(),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                                  Text("14:07 • Pets${HomeController().NumberTypeinTask(snapshot.data![index].types!.length)}", style: TextStyle(color: Colors.grey[600]))
+                                ],
+                              )
+                            ],
+                          ),
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+                            child: Icon(Icons.star, color: Colors.amber),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -86,7 +91,7 @@ class HomeScreenWidgets {
     );
   }
 
-  ModalAddTask(BuildContext context) {
+  ModalAddTask(BuildContext context, List<TypeTask>? types) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         backgroundColor: Colors.white,
@@ -113,7 +118,9 @@ class HomeScreenWidgets {
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("Andar com o cachorro", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)), Text("20:00 • Hoje", style: TextStyle(color: Colors.grey[600]))],
+                          children: [
+                            Text("Andar com o cachorro", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)), 
+                            Text("20:00 • Hoje", style: TextStyle(color: Colors.grey[600]))],
                         )
                       ],
                     ),
@@ -122,7 +129,7 @@ class HomeScreenWidgets {
                 ),
               ),
               Text("Andar com cachorro e aproveitar comprar o pão na padaria do lado", style: TextStyle(color: Colors.grey[600])),
-              ReturnType(),
+              ReturnType(types),
 
               // Divider(),
               //Text("Andar com cachorro e aproveitar comprar o pão na padaria do lado", style: TextStyle(color: Colors.grey[600])),
@@ -133,10 +140,10 @@ class HomeScreenWidgets {
             ])));
   }
 
-  Widget ReturnType() {
+  Widget ReturnType(List<TypeTask>? types) {
     return Column(
       children: [
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < types!.length; i++)
           Row(
             children: [
               Padding(
@@ -149,7 +156,7 @@ class HomeScreenWidgets {
                 height: 25,
                 decoration: BoxDecoration(color: Colors.grey[350], borderRadius: BorderRadius.all(Radius.circular(5))),
               ),
-              Text("Andar com cachorro")
+              Text(types[i].title ?? "")
             ],
           ),
         Divider()

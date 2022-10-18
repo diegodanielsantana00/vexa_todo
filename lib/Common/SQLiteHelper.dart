@@ -61,9 +61,9 @@ class DatabaseHelper {
     return result.isNotEmpty ? result.map((c) => Task.fromMap(c)).toList() : [];
   }
 
-  Future<List<TypeTask>> getTaskType() async {
+  Future<List<TypeTask>> getTaskType({int? id_task}) async {
     Database db = await database;
-    var result = await db.query("task_type");
+    var result = await db.query("task_type", where: "id_task = $id_task");
     print(result);
     return result.isNotEmpty ? result.map((c) => TypeTask.fromMap(c)).toList() : [];
   }

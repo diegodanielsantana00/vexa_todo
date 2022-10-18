@@ -1,5 +1,8 @@
 // ignore_for_file: non_constant_identifier_names, file_names
 
+import 'package:vexa_todo/Common/SQLiteHelper.dart';
+import 'package:vexa_todo/Screens/Home/Models/Type.dart';
+
 class Task {
   Task({this.id, this.text, this.title, this.color, this.priority, this.date_create, this.date_programmed, this.notifications});
 
@@ -10,7 +13,8 @@ class Task {
   int? priority;
   DateTime? date_create;
   DateTime? date_programmed;
-  List<DateTime>? notifications;
+  String? notifications;
+  List<TypeTask>? types;
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{

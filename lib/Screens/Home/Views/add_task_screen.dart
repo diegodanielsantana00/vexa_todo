@@ -36,7 +36,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                NavigatorController().navigatorBack(context);
+                Navigator.pop(context, false);
+                //NavigatorController().navigatorBack(context);
               },
               icon: Icon(Icons.cancel),
               color: Colors.red)
@@ -70,21 +71,24 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 color: Colors.green,
                 onPressed: () async {
-                  DatabaseHelper().executeStringLocal("DELETE FROM task;");
-                  DatabaseHelper().executeStringLocal("DELETE FROM task_type;");
-                  int id_task = await DatabaseHelper().insertDatabase("task", Task(
-                    title: titleEditingController.text,
-                    text: descriptionEditingController.text,
-                    color: widgetsScreen.colorString
-                    ));
+                  //DatabaseHelper().executeStringLocal("DELETE FROM task;");
+                  //DatabaseHelper().executeStringLocal("DELETE FROM task_type;");
+                  int id_task = await DatabaseHelper().insertDatabase(
+                      "task",
+                      Task(
+                          title: titleEditingController.text,
+                          text: descriptionEditingController.text,
+                          color: widgetsScreen.colorString,
+                          notifications: widgetsScreen.selectNotification.toIso8601String()));
                   for (var element in listType) {
                     element.id_task = id_task;
                     element.check_task = "N";
                     DatabaseHelper().insertDatabase("task_type", element);
                   }
-                  DatabaseHelper().getTask();
-                  DatabaseHelper().getTaskType();
-                  NavigatorController().navigatorBack(context);
+                  //DatabaseHelper().getTask();
+                  //DatabaseHelper().getTaskType();
+
+                  Navigator.pop(context, true);
                 },
                 child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
           )),
