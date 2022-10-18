@@ -3,6 +3,8 @@
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:vexa_todo/Screens/Home/Models/Task.dart';
+import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
@@ -22,9 +24,11 @@ class DatabaseHelper {
   }
 
   void _createDatabase(Database db, int version) async {
-    // await Structure().RunTableSQLite(db);
-    await db.execute("CREATE TABLE task(id INTEGER primary key autoincrement, text TEXT, priority INTEGER, date_create DATETIME, date_programmed DATETIME, notifications DATETIME [], type TEXT [], tags INTEGER [])");
+    await db.execute(
+        "CREATE TABLE task(id INTEGER primary key autoincrement, text TEXT, title TEXT, color TEXT, priority INTEGER, date_create DATETIME, date_programmed DATETIME, notifications DATETIME)");
     await db.execute("CREATE TABLE tags(id INTEGER primary key autoincrement, icon TEXT, title TEXT);");
+    await db.execute("CREATE TABLE task_tags(id INTEGER primary key autoincrement, id_task TEXT, id_tag TEXT);");
+    await db.execute("CREATE TABLE task_type(id INTEGER primary key autoincrement, id_task INTEGER, title TEXT, check_task TEXT );");
   }
 
   Future<int> insertDatabase(String table, dynamic object, {Database? database2}) async {
@@ -50,26 +54,18 @@ class DatabaseHelper {
     }
   }
 
-  // Future<User> getUserSQLite() async {
-  //   Database db = await database;
-  //   var result = await db.query("user");
-  //   List<User> list = result.isNotEmpty ? result.map((c) => User.fromMapLocal(c)).toList() : [];
-  //   if (list.isNotEmpty) {
-  //     return list[0];
-  //   } else {
-  //     return User(0, "", "", "", "", 0, "", "", "", "");
-  //   }
-  // }
-
-  Future<String> getCVV(String cardID) async {
+  Future<List<Task>> getTask() async {
     Database db = await database;
-    var result = await db.query("card", where: "cardid = '$cardID'");
+    var result = await db.query("task");
+    print(result);
+    return result.isNotEmpty ? result.map((c) => Task.fromMap(c)).toList() : [];
+  }
 
-    if (result.length > 0) {
-      return result[0]['cvv'].toString();
-    } else {
-      return "";
-    }
+  Future<List<TypeTask>> getTaskType({int? id_task}) async {
+    Database db = await database;
+    var result = await db.query("task_type", where: "id_task = $id_task");
+    print(result);
+    return result.isNotEmpty ? result.map((c) => TypeTask.fromMap(c)).toList() : [];
   }
 
   Future close() async {
