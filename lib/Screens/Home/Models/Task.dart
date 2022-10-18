@@ -11,8 +11,8 @@ class Task {
   String? title;
   String? color;
   int? priority;
-  DateTime? date_create;
-  DateTime? date_programmed;
+  String? date_create;
+  String? date_programmed;
   String? notifications;
   List<TypeTask>? types;
 

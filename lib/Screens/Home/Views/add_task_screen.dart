@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:vexa_todo/Common/Navigator.dart';
@@ -55,7 +55,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               SizedBox(
                 height: 10,
               ),
-              widgetsScreen.DateTimeTextField(context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  widgetsScreen.DateTimeProTextField(context),
+                  widgetsScreen.DateTimeTextField(context),
+                ],
+              )
             ],
           ),
         ),
@@ -79,15 +85,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           title: titleEditingController.text,
                           text: descriptionEditingController.text,
                           color: widgetsScreen.colorString,
+                          date_create: DateTime.now().toIso8601String(),
+                          date_programmed: widgetsScreen.selectNotificationPro.toIso8601String(),
                           notifications: widgetsScreen.selectNotification.toIso8601String()));
                   for (var element in listType) {
                     element.id_task = id_task;
                     element.check_task = "N";
                     DatabaseHelper().insertDatabase("task_type", element);
                   }
-                  //DatabaseHelper().getTask();
-                  //DatabaseHelper().getTaskType();
-
                   Navigator.pop(context, true);
                 },
                 child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
