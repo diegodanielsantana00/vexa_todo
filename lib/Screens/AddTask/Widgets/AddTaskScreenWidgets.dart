@@ -170,10 +170,9 @@ class AddTaskWidget {
   Widget DateTimeProTextField(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        DatePicker.showDateTimePicker(context,
+        DatePicker.showDatePicker(context,
             showTitleActions: true,
-            minTime: DateTime.now().add(Duration(days: 1)),
-            maxTime: DateTime.now().add(Duration(days: 6000)),
+            minTime: DateTime.now().add(Duration(hours: 1)),
             theme: DatePickerTheme(
                 headerColor: Colors.white,
                 backgroundColor: Colors.white,
@@ -186,10 +185,13 @@ class AddTaskWidget {
       child: Container(
         color: Colors.transparent,
         child: Row(
-          children: [Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.restore_outlined),
-          ), Text(formatter.format(selectNotificationPro))],
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.restore_outlined),
+            ),
+            Text(selectNotificationPro.day == DateTime.now().day && selectNotificationPro.month == DateTime.now().month  && selectNotificationPro.year == DateTime.now().year  ? "Hoje" : formatter.format(selectNotificationPro))
+          ],
         ),
       ),
     );

@@ -1,11 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/Navigator.dart';
+import 'package:vexa_todo/Common/Notification.dart';
 import 'package:vexa_todo/Common/SQLiteHelper.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
-import 'package:vexa_todo/Screens/Home/Widget/AddTaskScreenWidgets.dart';
+import 'package:vexa_todo/Screens/AddTask/Widgets/AddTaskScreenWidgets.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({Key? key}) : super(key: key);
@@ -70,12 +72,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           shape: const CircularNotchedRectangle(),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                color: Colors.green,
+            child: ElevatedButton(
+                style: styleButtonDefaut(),
                 onPressed: () async {
                   //DatabaseHelper().executeStringLocal("DELETE FROM task;");
                   //DatabaseHelper().executeStringLocal("DELETE FROM task_type;");
@@ -93,6 +91,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     element.check_task = "N";
                     DatabaseHelper().insertDatabase("task_type", element);
                   }
+                  NotificationCommon notification = NotificationCommon();
+                  await notification.startClass();
+                  await notification.creteNotification("title1", "body1", widgetsScreen.selectNotification.millisecondsSinceEpoch + 10000, "channel");
+
                   Navigator.pop(context, true);
                 },
                 child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
