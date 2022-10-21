@@ -1,6 +1,7 @@
-// ignore_for_file: file_names, avoid_init_to_null, unused_local_variable
+// ignore_for_file: file_names, avoid_init_to_null, unused_local_variable, argument_type_not_assignable_to_error_handler, non_constant_identifier_names
 
 import 'dart:io';
+import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
@@ -29,6 +30,9 @@ class DatabaseHelper {
     await db.execute("CREATE TABLE task_type(id INTEGER primary key autoincrement, id_task INTEGER, title TEXT, check_task TEXT );");
     await db.execute("CREATE TABLE tags(id INTEGER primary key autoincrement, icon TEXT, title TEXT);");
     await db.execute("CREATE TABLE task_tags(id INTEGER primary key autoincrement, id_task TEXT, id_tag TEXT);");
+    await db.execute("CREATE TABLE version(id INTEGER primary key autoincrement, version TEXT);");
+
+    await db.execute("INSERT INTO version (version) VALUES('${await GetVersion()}');");
   }
 
   Future<int> insertDatabase(String table, dynamic object, {Database? database2}) async {
@@ -70,7 +74,7 @@ class DatabaseHelper {
     ''', [type, id_type]);
   }
 
-    Future<void> updateTaskComplete(int id_type) async {
+  Future<void> updateTaskComplete(int id_type) async {
     Database db = await database;
 
     await db.rawUpdate('''
@@ -80,7 +84,7 @@ class DatabaseHelper {
     ''', ["Y", id_type]);
   }
 
-      Future<void> deleteTask(int id_task) async {
+  Future<void> deleteTask(int id_task) async {
     Database db = await database;
 
     await db.rawUpdate('''
@@ -88,17 +92,22 @@ class DatabaseHelper {
     WHERE id = ?
     ''', [id_task]);
 
-        await db.rawUpdate('''
+    await db.rawUpdate('''
     DELETE FROM task_type 
     WHERE id_task = ?
     ''', [id_task]);
   }
 
-
   Future<List<TypeTask>> getTaskType({int? id_task}) async {
     Database db = await database;
     var result = await db.query("task_type", where: "id_task = $id_task");
     return result.isNotEmpty ? result.map((c) => TypeTask.fromMap(c)).toList() : [];
+  }
+
+  Future<String> getLastVersion() async {
+    Database db = await database;
+    var result = await db.query("version");
+    return result[result.length - 1]["version"].toString();
   }
 
   Future close() async {

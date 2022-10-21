@@ -68,43 +68,35 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   widgetsScreen.DateTimeProTextField(context),
                   widgetsScreen.DateTimeTextField(context),
                 ],
-              )
+              ),
+              widgetsScreen.ButtonScreen(context, () async {
+                int id_task = await DatabaseHelper().insertDatabase(
+                    "task",
+                    Task(
+                        title: titleEditingController.text,
+                        text: descriptionEditingController.text,
+                        color: widgetsScreen.colorString,
+                        finish: "N",
+                        date_create: DateTime.now().toIso8601String(),
+                        priority: widgetsScreen.boolPriority ? 1 : 0,
+                        date_programmed: widgetsScreen.selectNotificationPro.toIso8601String(),
+                        notifications: widgetsScreen.selectNotification.toIso8601String()));
+                for (var element in listType) {
+                  element.id_task = id_task;
+                  element.check_task = "N";
+                  DatabaseHelper().insertDatabase("task_type", element);
+                }
+                NotificationCommon notification = NotificationCommon();
+                await notification.startClass();
+
+                await notification.creteNotification(titleEditingController.text, "Marque como concluida ✅", widgetsScreen.selectNotification.millisecondsSinceEpoch + 10000, "todo", id_task);
+
+                Navigator.pop(context, true);
+              })
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-                style: styleButtonDefaut(),
-                onPressed: () async {
-                  int id_task = await DatabaseHelper().insertDatabase(
-                      "task",
-                      Task(
-                          title: titleEditingController.text,
-                          text: descriptionEditingController.text,
-                          color: widgetsScreen.colorString,
-                          finish: "N",
-                          date_create: DateTime.now().toIso8601String(),
-                          priority: widgetsScreen.boolPriority ? 1 : 0,
-                          date_programmed: widgetsScreen.selectNotificationPro.toIso8601String(),
-                          notifications: widgetsScreen.selectNotification.toIso8601String()));
-                  for (var element in listType) {
-                    element.id_task = id_task;
-                    element.check_task = "N";
-                    DatabaseHelper().insertDatabase("task_type", element);
-                  }
-                  NotificationCommon notification = NotificationCommon();
-                  await notification.startClass();
-
-                  await notification.creteNotification(titleEditingController.text, "Marque como concluida ✅", widgetsScreen.selectNotification.millisecondsSinceEpoch + 10000, "todo", id_task);
-
-                  Navigator.pop(context, true);
-                },
-                child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
-          )),
     );
   }
 }

@@ -29,6 +29,12 @@ class TaskModels {
     list.sort((a, b) {
       return a.finish!.compareTo(b.finish ?? "N");
     });
+
+    list.sort((a, b) {
+      return StringISO0081toDateTime(b.date_programmed??"").compareTo(StringISO0081toDateTime(a.date_programmed??""));
+    });
+
+
     return list;
   }
 }

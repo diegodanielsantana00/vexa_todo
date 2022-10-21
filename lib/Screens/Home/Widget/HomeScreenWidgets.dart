@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member, avoid_print
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member, avoid_print, file_names
 
 import 'package:flutter/material.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
@@ -122,7 +122,7 @@ class HomeScreenWidgets {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(),
+                          child: ColorTask(task.color ?? "Color(0xffffffff)"),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +135,7 @@ class HomeScreenWidgets {
                         )
                       ],
                     ),
-                    SizedBox()
+                    StarPriority(task.priority ?? 0),
                   ],
                 ),
               ),
@@ -221,7 +221,7 @@ Widget ButtonDelete(int id_task) {
 Widget LineTaskComplete(String finish) {
   if (finish == "Y") {
     return Center(
-      child: Container(
+      child: SizedBox(
         height: 70,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -256,11 +256,7 @@ Widget StarPriority(int intPriority) {
 
 Widget ColorTask(String color) {
   if (color == "Color(0xffffffff)") {
-    return CircleAvatar(
-      radius: 20,
-      backgroundColor: Colors.grey,
-        child: CircleAvatar(radius: 17, backgroundColor: StringToColor(color)
-      ));
+    return CircleAvatar(radius: 20, backgroundColor: Colors.grey, child: CircleAvatar(radius: 17, backgroundColor: StringToColor(color)));
   } else {
     return CircleAvatar(backgroundColor: StringToColor(color));
   }

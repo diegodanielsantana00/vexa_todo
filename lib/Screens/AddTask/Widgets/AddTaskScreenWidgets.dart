@@ -256,4 +256,17 @@ class AddTaskWidget {
       ),
     );
   }
+
+  Widget ButtonScreen(BuildContext context, Function() function) {
+    return Container(
+      width: 200,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+            style: styleButtonDefaut(),
+            onPressed: function,
+            child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
+      ),
+    );
+  }
 }
