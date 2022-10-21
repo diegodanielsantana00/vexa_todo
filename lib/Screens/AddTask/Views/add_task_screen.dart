@@ -1,8 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
-import 'package:vexa_todo/Common/Navigator.dart';
 import 'package:vexa_todo/Common/Notification.dart';
 import 'package:vexa_todo/Common/SQLiteHelper.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
@@ -83,6 +82,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           title: titleEditingController.text,
                           text: descriptionEditingController.text,
                           color: widgetsScreen.colorString,
+                          finish: "N",
                           date_create: DateTime.now().toIso8601String(),
                           date_programmed: widgetsScreen.selectNotificationPro.toIso8601String(),
                           notifications: widgetsScreen.selectNotification.toIso8601String()));

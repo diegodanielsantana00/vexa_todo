@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
@@ -17,44 +17,55 @@ class HomeScreenWidgets {
           return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    ModalAddTask(context, snapshot.data![index]);
-                  },
-                  child: Container(
-                    color: Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
+                return Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        ModalAddTask(context, snapshot.data![index]);
+                      },
+                      child: Container(
+                        height: 70,
+                        color: Colors.transparent,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(),
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
                                 children: [
-                                  Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
-                                  Text(
-                                      "${HomeController().ReturnHourDateProgramed(snapshot.data![index].date_programmed ?? "2022-10-02")} • Pets${HomeController().NumberTypeinTask(snapshot.data![index].types!.length)}",
-                                      style: TextStyle(color: Colors.grey[600]))
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CircleAvatar(),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                                        ],
+                                      ),
+                                      Text(
+                                          "${HomeController().ReturnHourDateProgramed(snapshot.data![index].date_programmed ?? "2022-10-02")} • Pets${HomeController().NumberTypeinTask(snapshot.data![index].types!.length)}",
+                                          style: TextStyle(color: Colors.grey[600]))
+                                    ],
+                                  )
                                 ],
+                              ),
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+                                child: Icon(Icons.star, color: Colors.amber),
                               )
                             ],
                           ),
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
-                            child: Icon(Icons.star, color: Colors.amber),
-                          )
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    LineTaskComplete(snapshot.data![index].finish ?? "N")
+                  ],
                 );
               });
         } else if (snapshot.hasError) {
@@ -81,7 +92,6 @@ class HomeScreenWidgets {
           );
         } else {
           return Padding(
-            // Estamos procurando pedidos
             padding: const EdgeInsets.all(8.0),
             child: Container(
               width: 370,
@@ -146,6 +156,16 @@ class HomeScreenWidgets {
                 ),
               ),
               ReturnType(task.types, context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ButtonComplete(task.id ?? 0),
+                  ),
+                  ButtonDelete(task.id ?? 0),
+                ],
+              ),
               const SizedBox(
                 height: 70,
               ),
@@ -162,21 +182,15 @@ class HomeScreenWidgets {
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(Icons.menu, color: Colors.grey),
               ),
-              // Container(
-              //   margin: EdgeInsets.all(8),
-              //   width: 25,
-              //   height: 25,
-              //   decoration: BoxDecoration(color: Colors.grey[350], borderRadius: BorderRadius.all(Radius.circular(5))),
-              // ),
               Checkbox(
                 onChanged: (bool? value) {
                   print(value);
-                  types[i].check_task = (value ?? false) ? "S" : "N";
+                  types[i].check_task = (value ?? false) ? "Y" : "N";
                   DatabaseHelper().updateTypeCheck(types[i].check_task ?? "N", types[i].id ?? 0);
                   (context as Element).reassemble();
                 },
                 tristate: i == 1,
-                value: types[i].check_task == "S",
+                value: types[i].check_task == "Y",
                 activeColor: Colors.green,
               ),
               Text(types[i].title ?? "")
@@ -185,5 +199,52 @@ class HomeScreenWidgets {
         Divider()
       ],
     );
+  }
+}
+
+Widget ButtonComplete(int id_task) {
+  return Center(
+      child: ElevatedButton(
+          style: styleButtonDefaut(),
+          onPressed: () async {
+            // DatabaseHelper().updateTaskComplete(id_task);
+          },
+          child: Icon(Icons.check),
+          ));
+}
+
+Widget ButtonDelete(int id_task) {
+  return Center(
+      child: ElevatedButton(
+          style: styleButtonDefautRed(),
+          onPressed: () async {
+            DatabaseHelper().deleteTask(id_task);
+          },
+          child: Icon(Icons.delete),
+          ));
+}
+
+
+
+Widget LineTaskComplete(String finish) {
+  if (finish == "Y") {
+    return Center(
+      child: Container(
+        height: 70,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 350,
+              height: 2,
+              color: Colors.green[700],
+            ),
+          ],
+        ),
+      ),
+    );
+  } else {
+    return SizedBox();
   }
 }

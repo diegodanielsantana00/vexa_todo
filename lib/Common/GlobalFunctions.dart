@@ -16,6 +16,15 @@ ButtonStyle styleButtonDefaut() {
     padding: EdgeInsets.all(0),
   );
 }
+ButtonStyle styleButtonDefautRed() {
+  return TextButton.styleFrom(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20.0),
+    ),
+    backgroundColor: Colors.red,
+    padding: EdgeInsets.all(0),
+  );
+}
 
 DateTime StringISO0081toDateTime(String dateString) {
   return DateTime.parse(dateString);

@@ -26,7 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            GestureDetector(
+            boolAllTask ? Text("Todas tarefas",
+                      style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.w700)) : GestureDetector(
               onTap: () {
                 //FlutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
                 DatePicker.showDatePicker(context,

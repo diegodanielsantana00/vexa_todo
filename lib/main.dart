@@ -8,5 +8,6 @@ Future main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  // ignore: prefer_const_constructors
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen()));
 }

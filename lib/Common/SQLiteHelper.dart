@@ -25,7 +25,7 @@ class DatabaseHelper {
 
   void _createDatabase(Database db, int version) async {
     await db.execute(
-        "CREATE TABLE task(id INTEGER primary key autoincrement, text TEXT, title TEXT, color TEXT, priority INTEGER, date_create DATETIME, date_programmed DATETIME, notifications DATETIME)");
+        "CREATE TABLE task(id INTEGER primary key autoincrement, text TEXT, title TEXT, color TEXT, priority INTEGER, date_create DATETIME, date_programmed DATETIME, notifications DATETIME, finish TEXT)");
     await db.execute("CREATE TABLE task_type(id INTEGER primary key autoincrement, id_task INTEGER, title TEXT, check_task TEXT );");
     await db.execute("CREATE TABLE tags(id INTEGER primary key autoincrement, icon TEXT, title TEXT);");
     await db.execute("CREATE TABLE task_tags(id INTEGER primary key autoincrement, id_task TEXT, id_tag TEXT);");
@@ -69,6 +69,31 @@ class DatabaseHelper {
     WHERE id = ?
     ''', [type, id_type]);
   }
+
+    Future<void> updateTaskComplete(int id_type) async {
+    Database db = await database;
+
+    await db.rawUpdate('''
+    UPDATE task 
+    SET finish = ?
+    WHERE id = ?
+    ''', ["Y", id_type]);
+  }
+
+      Future<void> deleteTask(int id_task) async {
+    Database db = await database;
+
+    await db.rawUpdate('''
+    DELETE FROM task 
+    WHERE id = ?
+    ''', [id_task]);
+
+        await db.rawUpdate('''
+    DELETE FROM task_type 
+    WHERE id_task = ?
+    ''', [id_task]);
+  }
+
 
   Future<List<TypeTask>> getTaskType({int? id_task}) async {
     Database db = await database;
