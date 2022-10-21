@@ -52,7 +52,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  widgetsScreen.TitleTextField(context, titleEditingController),
+                  Row(
+                    children: [
+                      widgetsScreen.TitleTextField(context, titleEditingController),
+                      widgetsScreen.boolValidationTitle ? widgetsScreen.ErrorIcon() : SizedBox(),
+                    ],
+                  ),
                   widgetsScreen.StarPriority(context),
                 ],
               ),

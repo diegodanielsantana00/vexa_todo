@@ -17,6 +17,7 @@ class AddTaskWidget {
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
   bool boolSelectNotification = false;
   bool boolPriority = false;
+  bool boolValidationTitle = true;
 
   Widget PhasesWidgets(BuildContext context, List<TypeTask> listType) {
     return Padding(
@@ -114,6 +115,10 @@ class AddTaskWidget {
                 border: InputBorder.none,
               ),
               controller: titleEditingController,
+              onChanged: (value) {
+                boolValidationTitle = value.isEmpty;
+                RestartScreenHotRestart(context);
+              },
               autofocus: true,
             ),
           ),
@@ -262,11 +267,15 @@ class AddTaskWidget {
       width: 200,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(
-            style: styleButtonDefaut(),
-            onPressed: function,
-            child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
+        child: ElevatedButton(style: styleButtonDefaut(), onPressed: function, child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
       ),
+    );
+  }
+
+  Widget ErrorIcon() {
+    return Icon(
+      Icons.error,
+      color: Colors.red,
     );
   }
 }
