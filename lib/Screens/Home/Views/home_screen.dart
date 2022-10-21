@@ -8,6 +8,7 @@ import 'package:vexa_todo/Common/Navigator.dart';
 import 'package:vexa_todo/Screens/AddTask/Views/add_task_screen.dart';
 import 'package:vexa_todo/Screens/Home/Widget/HomeScreenWidgets.dart';
 
+bool boolAllTask = false;
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 //FlutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
                 DatePicker.showDatePicker(context,
                     showTitleActions: true,
@@ -59,7 +60,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                
+                boolAllTask = boolAllTask ? false : true;
+                setState(() {});
               },
               icon: Icon(Icons.remove_red_eye),
               color: Colors.black),
@@ -75,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Column(
-        children: [Divider(), Expanded(child: widgetsScreen.ListTaskViews())],
+        children: [Divider(), Expanded(child: widgetsScreen.ListTaskViews(boolAllTask, selectDate))],
       ),
     );
   }

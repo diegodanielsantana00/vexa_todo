@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 bool selectColor = false;
@@ -170,7 +171,7 @@ class AddTaskWidget {
   Widget DateTimeProTextField(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        DatePicker.showDatePicker(context,
+        DatePicker.showDateTimePicker(context,
             showTitleActions: true,
             minTime: DateTime.now().add(Duration(hours: 1)),
             theme: DatePickerTheme(
@@ -190,7 +191,7 @@ class AddTaskWidget {
               padding: const EdgeInsets.all(8.0),
               child: Icon(Icons.restore_outlined),
             ),
-            Text(selectNotificationPro.day == DateTime.now().day && selectNotificationPro.month == DateTime.now().month  && selectNotificationPro.year == DateTime.now().year  ? "Hoje" : formatter.format(selectNotificationPro))
+            Text( validateDateEqualDayMothYears(selectNotificationPro, DateTime.now())  ? "Hoje" : formatter.format(selectNotificationPro))
           ],
         ),
       ),

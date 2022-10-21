@@ -19,23 +19,20 @@ class NotificationCommon {
     await _localNotificationsPlugin.initialize(initSettings);
   }
 
-  Future<void> creteNotification(String title, String body, endTime, String channel) async {
+  Future<void> creteNotification(String title, String body, endTime, String channel, int id) async {
     tzData.initializeTimeZones();
     final scheduleTime = tz.TZDateTime.fromMillisecondsSinceEpoch(tz.local, endTime);
 
     final androidDetail = AndroidNotificationDetails(channel, channel);
 
-    final iosDetail = DarwinNotificationDetails();
+    const iosDetail = DarwinNotificationDetails();
 
     final noticeDetail = NotificationDetails(
       iOS: iosDetail,
       android: androidDetail,
     );
-
-    // final id = 0;
-
     await _localNotificationsPlugin.zonedSchedule(
-      0,
+      id,
       title,
       body,
       scheduleTime,

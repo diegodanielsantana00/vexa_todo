@@ -93,7 +93,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   }
                   NotificationCommon notification = NotificationCommon();
                   await notification.startClass();
-                  await notification.creteNotification("title1", "body1", widgetsScreen.selectNotification.millisecondsSinceEpoch + 10000, "channel");
+
+                  await notification.creteNotification(titleEditingController.text, "Marque como concluida ✅", widgetsScreen.selectNotification.millisecondsSinceEpoch + 10000, "todo", id_task);
 
                   Navigator.pop(context, true);
                 },
