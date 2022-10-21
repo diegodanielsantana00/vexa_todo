@@ -49,7 +49,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              widgetsScreen.TitleTextField(context, titleEditingController),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  widgetsScreen.TitleTextField(context, titleEditingController),
+                  widgetsScreen.StarPriority(context),
+                ],
+              ),
               widgetsScreen.ColorsWidgets(context),
               widgetsScreen.PhasesWidgets(context, listType),
               widgetsScreen.TextAreaDescription(context, descriptionEditingController),
@@ -74,8 +80,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: ElevatedButton(
                 style: styleButtonDefaut(),
                 onPressed: () async {
-                  //DatabaseHelper().executeStringLocal("DELETE FROM task;");
-                  //DatabaseHelper().executeStringLocal("DELETE FROM task_type;");
                   int id_task = await DatabaseHelper().insertDatabase(
                       "task",
                       Task(
@@ -84,6 +88,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           color: widgetsScreen.colorString,
                           finish: "N",
                           date_create: DateTime.now().toIso8601String(),
+                          priority: widgetsScreen.boolPriority ? 1 : 0,
                           date_programmed: widgetsScreen.selectNotificationPro.toIso8601String(),
                           notifications: widgetsScreen.selectNotification.toIso8601String()));
                   for (var element in listType) {

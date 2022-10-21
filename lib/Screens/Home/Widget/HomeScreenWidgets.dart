@@ -33,10 +33,7 @@ class HomeScreenWidgets {
                             children: [
                               Row(
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: CircleAvatar(),
-                                  ),
+                                  Padding(padding: const EdgeInsets.all(8.0), child: ColorTask(snapshot.data![index].color ?? "Color(0xffffffff)")),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -53,12 +50,7 @@ class HomeScreenWidgets {
                                   )
                                 ],
                               ),
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
-                                child: Icon(Icons.star, color: Colors.amber),
-                              )
+                              StarPriority(snapshot.data![index].priority ?? 0),
                             ],
                           ),
                         ),
@@ -147,14 +139,16 @@ class HomeScreenWidgets {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  task.text ?? "",
-                  style: TextStyle(color: Colors.grey[600]),
-                  textAlign: TextAlign.start,
-                ),
-              ),
+              task.text == null || task.text == ""
+                  ? SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        task.text ?? "",
+                        style: TextStyle(color: Colors.grey[600]),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
               ReturnType(task.types, context),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -205,26 +199,24 @@ class HomeScreenWidgets {
 Widget ButtonComplete(int id_task) {
   return Center(
       child: ElevatedButton(
-          style: styleButtonDefaut(),
-          onPressed: () async {
-            // DatabaseHelper().updateTaskComplete(id_task);
-          },
-          child: Icon(Icons.check),
-          ));
+    style: styleButtonDefaut(),
+    onPressed: () async {
+      // DatabaseHelper().updateTaskComplete(id_task);
+    },
+    child: Icon(Icons.check),
+  ));
 }
 
 Widget ButtonDelete(int id_task) {
   return Center(
       child: ElevatedButton(
-          style: styleButtonDefautRed(),
-          onPressed: () async {
-            DatabaseHelper().deleteTask(id_task);
-          },
-          child: Icon(Icons.delete),
-          ));
+    style: styleButtonDefautRed(),
+    onPressed: () async {
+      DatabaseHelper().deleteTask(id_task);
+    },
+    child: Icon(Icons.delete),
+  ));
 }
-
-
 
 Widget LineTaskComplete(String finish) {
   if (finish == "Y") {
@@ -246,5 +238,30 @@ Widget LineTaskComplete(String finish) {
     );
   } else {
     return SizedBox();
+  }
+}
+
+Widget StarPriority(int intPriority) {
+  if (intPriority == 1) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+      child: Icon(Icons.star, color: Colors.amber),
+    );
+  } else {
+    return SizedBox();
+  }
+}
+
+Widget ColorTask(String color) {
+  if (color == "Color(0xffffffff)") {
+    return CircleAvatar(
+      radius: 20,
+      backgroundColor: Colors.grey,
+        child: CircleAvatar(radius: 17, backgroundColor: StringToColor(color)
+      ));
+  } else {
+    return CircleAvatar(backgroundColor: StringToColor(color));
   }
 }

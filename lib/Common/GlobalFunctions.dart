@@ -30,6 +30,17 @@ DateTime StringISO0081toDateTime(String dateString) {
   return DateTime.parse(dateString);
 }
 
+
+Color StringToColor(String colorString) {
+  String valueString = colorString.split('(0x')[1].split(')')[0];
+  int value = int.parse(valueString, radix: 16);
+  return Color(value);;
+}
+
 bool validateDateEqualDayMothYears(DateTime dateOne, DateTime dateTwo,) {
   return dateOne.day == dateTwo.day && dateOne.month == dateTwo.month  && dateOne.year == dateTwo.year;
+}
+
+void RestartScreenHotRestart(BuildContext context) {
+    (context as Element).reassemble();
 }

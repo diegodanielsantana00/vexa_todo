@@ -16,6 +16,7 @@ class AddTaskWidget {
   DateTime selectNotificationPro = DateTime.now();
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
   bool boolSelectNotification = false;
+  bool boolPriority = false;
 
   Widget PhasesWidgets(BuildContext context, List<TypeTask> listType) {
     return Padding(
@@ -66,7 +67,7 @@ class AddTaskWidget {
     return GestureDetector(
       onTap: () {
         listType.add(TypeTask());
-        (context as Element).reassemble();
+        RestartScreenHotRestart(context);
       },
       child: Row(
         children: [
@@ -90,7 +91,7 @@ class AddTaskWidget {
           },
           child: CircleAvatar(
             radius: 14,
-            backgroundColor: Colors.grey,
+            backgroundColor: selectColorOption == Colors.white ? Colors.grey : selectColorOption,
             child: CircleAvatar(
               radius: 12,
               backgroundColor: selectColorOption,
@@ -121,6 +122,36 @@ class AddTaskWidget {
     );
   }
 
+  Widget StarPriority(BuildContext context) {
+    if (boolPriority) {
+      return GestureDetector(
+        onTap: () {
+          boolPriority = boolPriority ? false : true;
+          RestartScreenHotRestart(context);
+        },
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+          child: Icon(Icons.star, color: Colors.amber),
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () {
+          boolPriority = boolPriority ? false : true;
+          RestartScreenHotRestart(context);
+        },
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+          child: Icon(Icons.star, color: Colors.grey),
+        ),
+      );
+    }
+  }
+
   Widget ColorsWidgets(BuildContext context) {
     if (selectColor) {
       return Row(
@@ -130,7 +161,7 @@ class AddTaskWidget {
           CircularColor(context, Colors.orange[300]),
           CircularColor(context, Colors.green[300]),
           CircularColor(context, Colors.black),
-          CircularColor(context, Colors.grey[300]),
+          CircularColor(context, Colors.white),
           CircularColor(context, Colors.blue[300]),
           CircularColor(context, Colors.brown[300]),
           CircularColor(context, Colors.deepPurpleAccent),
@@ -191,7 +222,7 @@ class AddTaskWidget {
               padding: const EdgeInsets.all(8.0),
               child: Icon(Icons.restore_outlined),
             ),
-            Text( validateDateEqualDayMothYears(selectNotificationPro, DateTime.now())  ? "Hoje" : formatter.format(selectNotificationPro))
+            Text(validateDateEqualDayMothYears(selectNotificationPro, DateTime.now()) ? "Hoje" : formatter.format(selectNotificationPro))
           ],
         ),
       ),
