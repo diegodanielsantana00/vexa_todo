@@ -2,11 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/Navigator.dart';
-import 'package:vexa_todo/Screens/Home/Views/add_task_screen.dart';
+import 'package:vexa_todo/Screens/AddTask/Views/add_task_screen.dart';
 import 'package:vexa_todo/Screens/Home/Widget/HomeScreenWidgets.dart';
 
+bool boolAllTask = false;
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -22,22 +24,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          // mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
               onTap: () {
-                DatePicker.showDateTimePicker(context,
+                //FlutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestPermission();
+                DatePicker.showDatePicker(context,
                     showTitleActions: true,
-                    minTime: DateTime.now().add(Duration(hours: -1)),
-                    maxTime: DateTime.now().add(Duration(days: 10)),
                     theme: DatePickerTheme(
                         headerColor: Colors.white,
                         backgroundColor: Colors.white,
                         itemStyle: TextStyle(color: Colors.black, fontSize: 18),
                         doneStyle: TextStyle(color: Colors.green, fontSize: 16)), onConfirm: (date) {
                   selectDate = date;
-                  // boolSelectNotification = true;
                   (context as Element).reassemble();
                 }, currentTime: selectDate, locale: LocaleType.pt);
               },
@@ -61,6 +60,13 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
               onPressed: () async {
+                boolAllTask = boolAllTask ? false : true;
+                setState(() {});
+              },
+              icon: Icon(Icons.remove_red_eye),
+              color: Colors.black),
+          IconButton(
+              onPressed: () async {
                 bool result = await NavigatorController().navigatorToReturn(context, AddTaskScreen());
                 if (result) {
                   setState(() {});
@@ -71,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Column(
-        children: [Divider(), Expanded(child: widgetsScreen.ListTaskViews())],
+        children: [Divider(), Expanded(child: widgetsScreen.ListTaskViews(boolAllTask, selectDate))],
       ),
     );
   }

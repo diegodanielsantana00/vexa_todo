@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 bool selectColor = false;
@@ -11,8 +13,9 @@ Color selectColorOption = Colors.white;
 class AddTaskWidget {
   String colorString = Colors.white.toString();
   DateTime selectNotification = DateTime.now();
+  DateTime selectNotificationPro = DateTime.now();
+  final DateFormat formatter = DateFormat('dd/MM/yyyy');
   bool boolSelectNotification = false;
-  // AddTaskWidget({this.colorString});
 
   Widget PhasesWidgets(BuildContext context, List<TypeTask> listType) {
     return Padding(
@@ -157,8 +160,41 @@ class AddTaskWidget {
                 (context as Element).reassemble();
               }, currentTime: selectNotification, locale: LocaleType.pt);
             },
-            icon: Icon(Icons.notification_add, color: boolSelectNotification ? Colors.green[800] : Colors.black,))
+            icon: Icon(
+              Icons.notification_add,
+              color: boolSelectNotification ? Colors.green[800] : Colors.black,
+            ))
       ],
+    );
+  }
+
+  Widget DateTimeProTextField(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        DatePicker.showDateTimePicker(context,
+            showTitleActions: true,
+            minTime: DateTime.now().add(Duration(hours: 1)),
+            theme: DatePickerTheme(
+                headerColor: Colors.white,
+                backgroundColor: Colors.white,
+                itemStyle: TextStyle(color: Colors.black, fontSize: 18),
+                doneStyle: TextStyle(color: Colors.green, fontSize: 16)), onConfirm: (date) {
+          selectNotificationPro = date;
+          (context as Element).reassemble();
+        }, currentTime: selectNotificationPro, locale: LocaleType.pt);
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.restore_outlined),
+            ),
+            Text( validateDateEqualDayMothYears(selectNotificationPro, DateTime.now())  ? "Hoje" : formatter.format(selectNotificationPro))
+          ],
+        ),
+      ),
     );
   }
 

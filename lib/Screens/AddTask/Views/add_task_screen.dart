@@ -1,11 +1,13 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/Navigator.dart';
+import 'package:vexa_todo/Common/Notification.dart';
 import 'package:vexa_todo/Common/SQLiteHelper.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
-import 'package:vexa_todo/Screens/Home/Widget/AddTaskScreenWidgets.dart';
+import 'package:vexa_todo/Screens/AddTask/Widgets/AddTaskScreenWidgets.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({Key? key}) : super(key: key);
@@ -55,7 +57,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               SizedBox(
                 height: 10,
               ),
-              widgetsScreen.DateTimeTextField(context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  widgetsScreen.DateTimeProTextField(context),
+                  widgetsScreen.DateTimeTextField(context),
+                ],
+              )
             ],
           ),
         ),
@@ -64,12 +72,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           shape: const CircularNotchedRectangle(),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                color: Colors.green,
+            child: ElevatedButton(
+                style: styleButtonDefaut(),
                 onPressed: () async {
                   //DatabaseHelper().executeStringLocal("DELETE FROM task;");
                   //DatabaseHelper().executeStringLocal("DELETE FROM task_type;");
@@ -79,14 +83,18 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           title: titleEditingController.text,
                           text: descriptionEditingController.text,
                           color: widgetsScreen.colorString,
+                          date_create: DateTime.now().toIso8601String(),
+                          date_programmed: widgetsScreen.selectNotificationPro.toIso8601String(),
                           notifications: widgetsScreen.selectNotification.toIso8601String()));
                   for (var element in listType) {
                     element.id_task = id_task;
                     element.check_task = "N";
                     DatabaseHelper().insertDatabase("task_type", element);
                   }
-                  //DatabaseHelper().getTask();
-                  //DatabaseHelper().getTaskType();
+                  NotificationCommon notification = NotificationCommon();
+                  await notification.startClass();
+
+                  await notification.creteNotification(titleEditingController.text, "Marque como concluida ✅", widgetsScreen.selectNotification.millisecondsSinceEpoch + 10000, "todo", id_task);
 
                   Navigator.pop(context, true);
                 },

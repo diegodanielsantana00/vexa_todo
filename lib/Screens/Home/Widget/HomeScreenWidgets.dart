@@ -1,15 +1,17 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:vexa_todo/Common/GlobalFunctions.dart';
+import 'package:vexa_todo/Common/SQLiteHelper.dart';
 import 'package:vexa_todo/Screens/Home/Controller/HomeController.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 import 'package:vexa_todo/Screens/Home/Models/TaskModels.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 class HomeScreenWidgets {
-  Widget ListTaskViews() {
+  Widget ListTaskViews(bool allTask, DateTime todayDate) {
     return FutureBuilder<List<Task>>(
-      future: TaskModels().GetTask(),
+      future: TaskModels().GetTask(allTask, todayDate),
       builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
@@ -17,7 +19,7 @@ class HomeScreenWidgets {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    ModalAddTask(context, snapshot.data![index].types);
+                    ModalAddTask(context, snapshot.data![index]);
                   },
                   child: Container(
                     color: Colors.transparent,
@@ -36,7 +38,9 @@ class HomeScreenWidgets {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
-                                  Text("14:07 • Pets${HomeController().NumberTypeinTask(snapshot.data![index].types!.length)}", style: TextStyle(color: Colors.grey[600]))
+                                  Text(
+                                      "${HomeController().ReturnHourDateProgramed(snapshot.data![index].date_programmed ?? "2022-10-02")} • Pets${HomeController().NumberTypeinTask(snapshot.data![index].types!.length)}",
+                                      style: TextStyle(color: Colors.grey[600]))
                                 ],
                               )
                             ],
@@ -91,19 +95,21 @@ class HomeScreenWidgets {
     );
   }
 
-  ModalAddTask(BuildContext context, List<TypeTask>? types) {
+  ModalAddTask(BuildContext context, Task task) {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         backgroundColor: Colors.white,
         context: context,
         builder: (context) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Container(
-                margin: EdgeInsets.all(8),
-                width: 60,
-                height: 4,
-                decoration: BoxDecoration(color: Colors.grey[350], borderRadius: BorderRadius.all(Radius.circular(20))),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
+              Center(
+                child: Container(
+                  margin: EdgeInsets.all(8),
+                  width: 60,
+                  height: 4,
+                  decoration: BoxDecoration(color: Colors.grey[350], borderRadius: BorderRadius.all(Radius.circular(20))),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -119,8 +125,11 @@ class HomeScreenWidgets {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Andar com o cachorro", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)), 
-                            Text("20:00 • Hoje", style: TextStyle(color: Colors.grey[600]))],
+                            Text(task.title ?? "", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                            Text(
+                                "${validateDateEqualDayMothYears(StringISO0081toDateTime(task.date_programmed ?? ""), DateTime.now()) ? "Hoje" : HomeController().ReturnDateProgramed(task.date_programmed ?? "2022-10-02")} • ${HomeController().ReturnHourDateProgramed(task.date_programmed ?? "2022-10-02")}",
+                                style: TextStyle(color: Colors.grey[600]))
+                          ],
                         )
                       ],
                     ),
@@ -128,19 +137,22 @@ class HomeScreenWidgets {
                   ],
                 ),
               ),
-              Text("Andar com cachorro e aproveitar comprar o pão na padaria do lado", style: TextStyle(color: Colors.grey[600])),
-              ReturnType(types),
-
-              // Divider(),
-              //Text("Andar com cachorro e aproveitar comprar o pão na padaria do lado", style: TextStyle(color: Colors.grey[600])),
-
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  task.text ?? "",
+                  style: TextStyle(color: Colors.grey[600]),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              ReturnType(task.types, context),
               const SizedBox(
                 height: 70,
               ),
             ])));
   }
 
-  Widget ReturnType(List<TypeTask>? types) {
+  Widget ReturnType(List<TypeTask>? types, context) {
     return Column(
       children: [
         for (int i = 0; i < types!.length; i++)
@@ -150,11 +162,22 @@ class HomeScreenWidgets {
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(Icons.menu, color: Colors.grey),
               ),
-              Container(
-                margin: EdgeInsets.all(8),
-                width: 25,
-                height: 25,
-                decoration: BoxDecoration(color: Colors.grey[350], borderRadius: BorderRadius.all(Radius.circular(5))),
+              // Container(
+              //   margin: EdgeInsets.all(8),
+              //   width: 25,
+              //   height: 25,
+              //   decoration: BoxDecoration(color: Colors.grey[350], borderRadius: BorderRadius.all(Radius.circular(5))),
+              // ),
+              Checkbox(
+                onChanged: (bool? value) {
+                  print(value);
+                  types[i].check_task = (value ?? false) ? "S" : "N";
+                  DatabaseHelper().updateTypeCheck(types[i].check_task ?? "N", types[i].id ?? 0);
+                  (context as Element).reassemble();
+                },
+                tristate: i == 1,
+                value: types[i].check_task == "S",
+                activeColor: Colors.green,
               ),
               Text(types[i].title ?? "")
             ],
