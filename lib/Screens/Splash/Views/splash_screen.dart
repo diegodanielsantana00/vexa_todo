@@ -1,7 +1,4 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/Navigator.dart';
@@ -25,12 +22,33 @@ class _SplashScreenState extends State<SplashScreen> {
       if (int.parse(varsionDataBase.split("+")[0].replaceAll(".", "")) < int.parse(version.split("+")[0].replaceAll(".", ""))) {
         //Structure
       }
-      NavigatorController().navigatorToNoReturnNoAnimated(context, HomeScreen());
+      Future.delayed(Duration(seconds: 2), () {NavigatorController().navigatorToNoReturnNoAnimated(context, HomeScreen());});
     }
 
     StartProcess();
     return Scaffold(
       backgroundColor: Colors.green,
+      body: Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            SizedBox(
+              width: 200,
+              height: 30,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
+            CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset("assets/png/logo.png"),
+                )),
+          ],
+        ),
+      ),
     );
   }
 }

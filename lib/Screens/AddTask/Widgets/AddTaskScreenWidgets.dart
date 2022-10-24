@@ -263,7 +263,7 @@ class AddTaskWidget {
   }
 
   Widget ButtonScreen(BuildContext context, Function() function) {
-    return Container(
+    return SizedBox(
       width: 200,
       child: Padding(
         padding: const EdgeInsets.all(8.0),

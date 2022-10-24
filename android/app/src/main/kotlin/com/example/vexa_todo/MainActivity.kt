@@ -1,4 +1,4 @@
-package com.example.vexa_todo
+package com.danieldiego.vexa_todo
 
 import io.flutter.embedding.android.FlutterActivity
 

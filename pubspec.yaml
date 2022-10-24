@@ -1,5 +1,5 @@
 name: vexa_todo
-description: A new Flutter project.
+description: Aplicativo de agendamentos de tarefas.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -63,6 +63,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/png/
     - pubspec.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
