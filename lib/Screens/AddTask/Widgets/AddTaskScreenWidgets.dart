@@ -16,6 +16,8 @@ class AddTaskWidget {
   DateTime selectNotificationPro = DateTime.now();
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
   bool boolSelectNotification = false;
+  bool boolPriority = false;
+  bool boolValidationTitle = true;
 
   Widget PhasesWidgets(BuildContext context, List<TypeTask> listType) {
     return Padding(
@@ -66,7 +68,7 @@ class AddTaskWidget {
     return GestureDetector(
       onTap: () {
         listType.add(TypeTask());
-        (context as Element).reassemble();
+        RestartScreenHotRestart(context);
       },
       child: Row(
         children: [
@@ -90,7 +92,7 @@ class AddTaskWidget {
           },
           child: CircleAvatar(
             radius: 14,
-            backgroundColor: Colors.grey,
+            backgroundColor: selectColorOption == Colors.white ? Colors.grey : selectColorOption,
             child: CircleAvatar(
               radius: 12,
               backgroundColor: selectColorOption,
@@ -113,12 +115,46 @@ class AddTaskWidget {
                 border: InputBorder.none,
               ),
               controller: titleEditingController,
+              onChanged: (value) {
+                boolValidationTitle = value.isEmpty;
+                RestartScreenHotRestart(context);
+              },
               autofocus: true,
             ),
           ),
         ),
       ],
     );
+  }
+
+  Widget StarPriority(BuildContext context) {
+    if (boolPriority) {
+      return GestureDetector(
+        onTap: () {
+          boolPriority = boolPriority ? false : true;
+          RestartScreenHotRestart(context);
+        },
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(color: Colors.amber[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+          child: Icon(Icons.star, color: Colors.amber),
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () {
+          boolPriority = boolPriority ? false : true;
+          RestartScreenHotRestart(context);
+        },
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.all(Radius.circular(7))),
+          child: Icon(Icons.star, color: Colors.grey),
+        ),
+      );
+    }
   }
 
   Widget ColorsWidgets(BuildContext context) {
@@ -130,7 +166,7 @@ class AddTaskWidget {
           CircularColor(context, Colors.orange[300]),
           CircularColor(context, Colors.green[300]),
           CircularColor(context, Colors.black),
-          CircularColor(context, Colors.grey[300]),
+          CircularColor(context, Colors.white),
           CircularColor(context, Colors.blue[300]),
           CircularColor(context, Colors.brown[300]),
           CircularColor(context, Colors.deepPurpleAccent),
@@ -191,7 +227,7 @@ class AddTaskWidget {
               padding: const EdgeInsets.all(8.0),
               child: Icon(Icons.restore_outlined),
             ),
-            Text( validateDateEqualDayMothYears(selectNotificationPro, DateTime.now())  ? "Hoje" : formatter.format(selectNotificationPro))
+            Text(validateDateEqualDayMothYears(selectNotificationPro, DateTime.now()) ? "Hoje" : formatter.format(selectNotificationPro))
           ],
         ),
       ),
@@ -223,6 +259,23 @@ class AddTaskWidget {
         radius: 13,
         backgroundColor: color,
       ),
+    );
+  }
+
+  Widget ButtonScreen(BuildContext context, Function() function) {
+    return SizedBox(
+      width: 200,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(style: styleButtonDefaut(), onPressed: function, child: Text("Adicionar", style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white))),
+      ),
+    );
+  }
+
+  Widget ErrorIcon() {
+    return Icon(
+      Icons.error,
+      color: Colors.red,
     );
   }
 }

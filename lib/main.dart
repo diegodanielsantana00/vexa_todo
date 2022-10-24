@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vexa_todo/Screens/Home/Views/home_screen.dart';
+import 'package:vexa_todo/Screens/Splash/Views/splash_screen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -8,5 +8,6 @@ Future main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen()));
+  // ignore: prefer_const_constructors
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: SplashScreen()));
 }

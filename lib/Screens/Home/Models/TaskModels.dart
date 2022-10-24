@@ -1,6 +1,7 @@
+// ignore_for_file: non_constant_identifier_names, file_names
+
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/SQLiteHelper.dart';
-import 'package:vexa_todo/Screens/Home/Controller/HomeController.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 
 class TaskModels {
@@ -19,6 +20,21 @@ class TaskModels {
       }
     }
 
+    resultTask = OrderList(resultTask);
+
     return resultTask;
+  }
+
+  List<Task> OrderList(List<Task> list) {
+    list.sort((a, b) {
+      return a.finish!.compareTo(b.finish ?? "N");
+    });
+
+    list.sort((a, b) {
+      return StringISO0081toDateTime(b.date_programmed??"").compareTo(StringISO0081toDateTime(a.date_programmed??""));
+    });
+
+
+    return list;
   }
 }
