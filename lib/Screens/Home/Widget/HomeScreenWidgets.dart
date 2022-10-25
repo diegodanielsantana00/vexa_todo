@@ -1,7 +1,8 @@
-// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member, avoid_print, file_names
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors, prefer_const_literals_to_create_immutables, invalid_use_of_protected_member, avoid_print, file_names, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
+import 'package:vexa_todo/Common/Navigator.dart';
 import 'package:vexa_todo/Common/SQLiteHelper.dart';
 import 'package:vexa_todo/Screens/Home/Controller/HomeController.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
@@ -9,7 +10,7 @@ import 'package:vexa_todo/Screens/Home/Models/TaskModels.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 class HomeScreenWidgets {
-  Widget ListTaskViews(bool allTask, DateTime todayDate) {
+  Widget ListTaskViews(bool allTask, DateTime todayDate, BuildContext contextScreen) {
     return FutureBuilder<List<Task>>(
       future: TaskModels().GetTask(allTask, todayDate),
       builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
@@ -21,7 +22,7 @@ class HomeScreenWidgets {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        ModalAddTask(context, snapshot.data![index]);
+                        ModalAddTask(contextScreen, snapshot.data![index]);
                       },
                       child: Container(
                         height: 70,
@@ -97,11 +98,11 @@ class HomeScreenWidgets {
     );
   }
 
-  ModalAddTask(BuildContext context, Task task) {
-    showModalBottomSheet(
+  ModalAddTask(BuildContext contextScreen, Task task) async {
+    await showModalBottomSheet(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         backgroundColor: Colors.white,
-        context: context,
+        context: contextScreen,
         builder: (context) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: <Widget>[
@@ -155,15 +156,19 @@ class HomeScreenWidgets {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ButtonComplete(task.id ?? 0),
+                    child: ButtonComplete(context, task.id ?? 0),
                   ),
-                  ButtonDelete(task.id ?? 0),
+                  ButtonDelete(context, task.id ?? 0),
                 ],
               ),
               const SizedBox(
                 height: 70,
               ),
-            ])));
+            ]))).then((value) {
+      RestartScreenHotRestart(contextScreen);
+    });
+    //RestartScreenHotRestart(contextScreen);
+    // print("teste");
   }
 
   Widget ReturnType(List<TypeTask>? types, context) {
@@ -196,23 +201,25 @@ class HomeScreenWidgets {
   }
 }
 
-Widget ButtonComplete(int id_task) {
+Widget ButtonComplete(BuildContext context, int id_task) {
   return Center(
       child: ElevatedButton(
     style: styleButtonDefaut(),
     onPressed: () async {
-      // DatabaseHelper().updateTaskComplete(id_task);
+      DatabaseHelper().updateTaskComplete(id_task);
+      NavigatorController().navigatorBack(context);
     },
     child: Icon(Icons.check),
   ));
 }
 
-Widget ButtonDelete(int id_task) {
+Widget ButtonDelete(BuildContext context, int id_task) {
   return Center(
       child: ElevatedButton(
     style: styleButtonDefautRed(),
     onPressed: () async {
       DatabaseHelper().deleteTask(id_task);
+      NavigatorController().navigatorBack(context);
     },
     child: Icon(Icons.delete),
   ));
