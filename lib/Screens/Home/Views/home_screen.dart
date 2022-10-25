@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 boolAllTask = boolAllTask ? false : true;
                 setState(() {});
               },
-              icon: Icon(Icons.remove_red_eye),
+              icon: Icon(boolAllTask ? Icons.remove_red_eye_outlined : Icons.remove_red_eye),
               color: Colors.black),
           IconButton(
               onPressed: () async {
@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Column(
-        children: [Divider(), Expanded(child: widgetsScreen.ListTaskViews(boolAllTask, selectDate))],
+        children: [Divider(), Expanded(child: widgetsScreen.ListTaskViews(boolAllTask, selectDate, context))],
       ),
     );
   }

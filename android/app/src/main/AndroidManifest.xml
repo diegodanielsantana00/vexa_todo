@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.danieldiego.vexa_todo">
    <application
-        android:label="Tarefas Vexa"
+        android:label="Tarefas"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
