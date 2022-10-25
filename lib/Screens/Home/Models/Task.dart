@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, file_names
 
+import 'package:vexa_todo/Screens/AddTask/Models/Tags.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 class Task {
@@ -15,6 +16,7 @@ class Task {
   String? date_programmed;
   String? notifications;
   List<TypeTask>? types;
+  List<Tags>? tags;
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{

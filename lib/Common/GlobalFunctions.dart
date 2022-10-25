@@ -3,7 +3,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/Tags.dart';
 import 'package:yaml/yaml.dart';
+
+List<Tags> resultAuxTagsAll = [ // Temporary
+        Tags(id: 98273170, title: "Trabalho", color: Colors.blue[300].toString()),
+        Tags(id: 98273171, title: "Estudos", color: Colors.pink[300].toString()),
+        Tags(id: 98273172, title: "Pets", color: Colors.green.toString()),
+        Tags(id: 98273173, title: "Casa", color: Colors.red.toString()),
+        Tags(id: 98273174, title: "Outros", color: Colors.lime.toString())
+      ];
 
 String GetNameMonth(int month) {
   List months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];

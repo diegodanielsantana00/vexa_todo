@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/Tags.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/TaskTags.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
@@ -28,8 +30,8 @@ class DatabaseHelper {
     await db.execute(
         "CREATE TABLE task(id INTEGER primary key autoincrement, text TEXT, title TEXT, color TEXT, priority INTEGER, date_create DATETIME, date_programmed DATETIME, notifications DATETIME, finish TEXT)");
     await db.execute("CREATE TABLE task_type(id INTEGER primary key autoincrement, id_task INTEGER, title TEXT, check_task TEXT );");
-    await db.execute("CREATE TABLE tags(id INTEGER primary key autoincrement, icon TEXT, title TEXT);");
-    await db.execute("CREATE TABLE task_tags(id INTEGER primary key autoincrement, id_task TEXT, id_tag TEXT);");
+    await db.execute("CREATE TABLE tags(id INTEGER primary key autoincrement, icon TEXT, title TEXT, color TEXT);");
+    await db.execute("CREATE TABLE task_tags(id INTEGER primary key autoincrement, id_task INTEGER, id_tag INTEGER);");
     await db.execute("CREATE TABLE version(id INTEGER primary key autoincrement, version TEXT);");
 
     await db.execute("INSERT INTO version (version) VALUES('${await GetVersion()}');");
@@ -104,10 +106,22 @@ class DatabaseHelper {
     return result.isNotEmpty ? result.map((c) => TypeTask.fromMap(c)).toList() : [];
   }
 
+  Future<List<TaskTags>> getTaskTags({int? id_task}) async {
+    Database db = await database;
+    var result = await db.query("task_tags", where: "id_task = $id_task");
+    return result.isNotEmpty ? result.map((c) => TaskTags.fromMap(c)).toList() : [];
+  }
+
   Future<String> getLastVersion() async {
     Database db = await database;
     var result = await db.query("version");
     return result[result.length - 1]["version"].toString();
+  }
+
+  Future<List<Tags>> getTags() async {
+    Database db = await database;
+    var result = await db.query("tags");
+    return result.isNotEmpty ? result.map((c) => Tags.fromMap(c)).toList() : [];
   }
 
   Future close() async {

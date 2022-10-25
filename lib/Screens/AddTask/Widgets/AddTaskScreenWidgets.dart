@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/Tags.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/TagsContext.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 
 bool selectColor = false;
@@ -18,6 +20,8 @@ class AddTaskWidget {
   bool boolSelectNotification = false;
   bool boolPriority = false;
   bool boolValidationTitle = true;
+  List<Tags> auxListTags = [];
+  List<int> tagsSelect = [];
 
   Widget PhasesWidgets(BuildContext context, List<TypeTask> listType) {
     return Padding(
@@ -77,6 +81,24 @@ class AddTaskWidget {
             child: Icon(Icons.add, color: Colors.grey),
           ),
           Text("Adicionar etapa")
+        ],
+      ),
+    );
+  }
+
+  Widget AddTags(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        auxListTags.add(Tags());
+        RestartScreenHotRestart(context);
+      },
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(Icons.add, color: Colors.grey),
+          ),
+          Text("Adicionar tag")
         ],
       ),
     );
@@ -204,6 +226,14 @@ class AddTaskWidget {
     );
   }
 
+  Widget TagsSelect(BuildContext contextScreen) {
+    return IconButton(
+        onPressed: () {
+          ModalTags(contextScreen);
+        },
+        icon: Icon(Icons.tag));
+  }
+
   Widget DateTimeProTextField(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -225,7 +255,7 @@ class AddTaskWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.restore_outlined),
+              child: Icon(Icons.calendar_month),
             ),
             Text(validateDateEqualDayMothYears(selectNotificationPro, DateTime.now()) ? "Hoje" : formatter.format(selectNotificationPro))
           ],
@@ -276,6 +306,90 @@ class AddTaskWidget {
     return Icon(
       Icons.error,
       color: Colors.red,
+    );
+  }
+
+  ModalTags(BuildContext contextScreen) async {
+    auxListTags = await TagsContext().GetTask();
+    await showModalBottomSheet(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        backgroundColor: Colors.white,
+        context: contextScreen,
+        builder: (context) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Selecione uma tags 🏷", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                ),
+                ReturnTags(context),
+                //AddTags(context)
+              ],
+            ))).then((value) {
+      RestartScreenHotRestart(contextScreen);
+    });
+  }
+
+  Widget ReturnTags(BuildContext context) {
+    return Column(
+      children: [
+        for (int i = 0; i < auxListTags.length; i++)
+          GestureDetector(
+            onTap: () {
+              if (!tagsSelect.contains(auxListTags[i].id)){
+                tagsSelect.add(auxListTags[i].id ?? 0);
+              }else{
+                tagsSelect.remove(auxListTags[i].id ?? 0);
+              }
+              RestartScreenHotRestart(context);
+            },
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.menu, color: Colors.grey),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        width: 25,
+                        height: 25,
+                        decoration: BoxDecoration(color: StringToColor(auxListTags[i].color ?? ""), borderRadius: BorderRadius.all(Radius.circular(5))),
+                      ),
+                      SizedBox(
+                        width: 170,
+                        child: TextFormField(
+                          initialValue: auxListTags[i].title ?? "",
+                          enabled: false,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(color: Colors.black, fontSize: 14),
+                          keyboardType: TextInputType.name,
+                          autocorrect: false,
+                          textCapitalization: TextCapitalization.none,
+                          onChanged: (value) {
+                            // listType[i].title = value;
+                          },
+                          cursorColor: const Color.fromARGB(255, 85, 58, 1),
+                          decoration: InputDecoration(
+                            hintText: "",
+                            border: InputBorder.none,
+                          ),
+                          //autofocus: listType[i].title == null || listType[i].title == "",
+                        ),
+                      ),
+                    ],
+                  ),
+                  tagsSelect.contains(auxListTags[i].id) ? Icon(Icons.check) : SizedBox()
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

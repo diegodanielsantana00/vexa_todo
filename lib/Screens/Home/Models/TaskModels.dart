@@ -2,6 +2,8 @@
 
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/SQLiteHelper.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/Tags.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/TaskTags.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 
 class TaskModels {
@@ -10,6 +12,9 @@ class TaskModels {
     List<Task> resultTask = [];
     for (var element in resultAux) {
       element.types = await DatabaseHelper().getTaskType(id_task: element.id);
+
+      element.tags = await getTags(element.id??0);
+
       if (allBool) {
         resultTask.add(element);
       } else {
@@ -31,10 +36,21 @@ class TaskModels {
     });
 
     list.sort((a, b) {
-      return StringISO0081toDateTime(b.date_programmed??"").compareTo(StringISO0081toDateTime(a.date_programmed??""));
+      return StringISO0081toDateTime(b.date_programmed ?? "").compareTo(StringISO0081toDateTime(a.date_programmed ?? ""));
     });
 
-
     return list;
+  }
+
+  Future<List<Tags>> getTags(int id_task) async {
+    List<TaskTags> tagsAux = await DatabaseHelper().getTaskTags(id_task: id_task);
+    List<Tags> tags = [];
+    for (var element in resultAuxTagsAll) {
+      if (tagsAux.map((e) => e.id_tag).toList().contains(element.id)) {
+        tags.add(element);
+      }
+    }
+
+    return tags;
   }
 }

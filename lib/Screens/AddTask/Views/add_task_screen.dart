@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/Notification.dart';
 import 'package:vexa_todo/Common/SQLiteHelper.dart';
+import 'package:vexa_todo/Screens/AddTask/Models/TaskTags.dart';
 import 'package:vexa_todo/Screens/Home/Models/Task.dart';
 import 'package:vexa_todo/Screens/Home/Models/Type.dart';
 import 'package:vexa_todo/Screens/AddTask/Widgets/AddTaskScreenWidgets.dart';
@@ -71,7 +72,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   widgetsScreen.DateTimeProTextField(context),
-                  widgetsScreen.DateTimeTextField(context),
+                  Row(
+                    children: [
+                      widgetsScreen.DateTimeTextField(context),
+                      widgetsScreen.TagsSelect(context)
+                    ],
+                  ),
                 ],
               ),
               widgetsScreen.ButtonScreen(context, () async {
@@ -91,6 +97,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     element.id_task = id_task;
                     element.check_task = "N";
                     DatabaseHelper().insertDatabase("task_type", element);
+                  }
+
+                  for (var element in widgetsScreen.tagsSelect) {
+                    DatabaseHelper().insertDatabase("task_tags", TaskTags(id_tag: element, id_task: id_task));
                   }
                   
                   if (widgetsScreen.boolSelectNotification && DateTime.now().isBefore(widgetsScreen.selectNotification) ) {

@@ -15,52 +15,60 @@ class HomeScreenWidgets {
       future: TaskModels().GetTask(allTask, todayDate),
       builder: (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
         if (snapshot.hasData) {
-          return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        ModalAddTask(contextScreen, snapshot.data![index]);
-                      },
-                      child: Container(
-                        height: 70,
-                        color: Colors.transparent,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(padding: const EdgeInsets.all(8.0), child: ColorTask(snapshot.data![index].color ?? "Color(0xffffffff)")),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
-                                        ],
-                                      ),
-                                      Text(
-                                          "${HomeController().ReturnHourDateProgramed(snapshot.data![index].date_programmed ?? "2022-10-02")} • Pets${HomeController().NumberTypeinTask(snapshot.data![index].types!.length)}",
-                                          style: TextStyle(color: Colors.grey[600]))
-                                    ],
-                                  )
-                                ],
-                              ),
-                              StarPriority(snapshot.data![index].priority ?? 0),
-                            ],
+          if (snapshot.data!.isEmpty) {
+            if (!allTask) {
+              return Text("Não encontramos tarefas para esse dia.");
+            } else {
+              return Text("Não encontramos tarefas.");
+            }
+          } else {
+            return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          ModalAddTask(contextScreen, snapshot.data![index]);
+                        },
+                        child: Container(
+                          height: 70,
+                          color: Colors.transparent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(padding: const EdgeInsets.all(8.0), child: ColorTask(snapshot.data![index].color ?? "Color(0xffffffff)")),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text("${snapshot.data![index].title}", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                                          ],
+                                        ),
+                                        Text(
+                                            "${HomeController().ReturnHourDateProgramed(snapshot.data![index].date_programmed ?? "2022-10-02")}${HomeController().TaskTagsReturn(snapshot.data![index].tags??[])}${HomeController().NumberTypeinTask(snapshot.data![index].types!.length)}",
+                                            style: TextStyle(color: Colors.grey[600]))
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                StarPriority(snapshot.data![index].priority ?? 0),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    LineTaskComplete(snapshot.data![index].finish ?? "N")
-                  ],
-                );
-              });
+                      LineTaskComplete(snapshot.data![index].finish ?? "N")
+                    ],
+                  );
+                });
+          }
         } else if (snapshot.hasError) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -167,8 +175,6 @@ class HomeScreenWidgets {
             ]))).then((value) {
       RestartScreenHotRestart(contextScreen);
     });
-    //RestartScreenHotRestart(contextScreen);
-    // print("teste");
   }
 
   Widget ReturnType(List<TypeTask>? types, context) {
