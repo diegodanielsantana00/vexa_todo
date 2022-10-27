@@ -210,7 +210,7 @@ class HomeScreenWidgets {
 Widget ButtonComplete(BuildContext context, int id_task) {
   return Center(
       child: ElevatedButton(
-    style: styleButtonDefaut(),
+    style: styleButtonDefaut(Colors.green),
     onPressed: () async {
       DatabaseHelper().updateTaskComplete(id_task);
       NavigatorController().navigatorBack(context);
@@ -222,7 +222,7 @@ Widget ButtonComplete(BuildContext context, int id_task) {
 Widget ButtonDelete(BuildContext context, int id_task) {
   return Center(
       child: ElevatedButton(
-    style: styleButtonDefautRed(),
+    style: styleButtonDefaut(Colors.red),
     onPressed: () async {
       DatabaseHelper().deleteTask(id_task);
       NavigatorController().navigatorBack(context);
