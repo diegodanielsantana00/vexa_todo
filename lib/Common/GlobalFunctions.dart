@@ -19,22 +19,12 @@ String GetNameMonth(int month) {
   return months[month - 1];
 }
 
-ButtonStyle styleButtonDefaut() {
+ButtonStyle styleButtonDefaut(Color color) {
   return TextButton.styleFrom(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20.0),
     ),
-    backgroundColor: Colors.green,
-    padding: EdgeInsets.all(0),
-  );
-}
-
-ButtonStyle styleButtonDefautRed() {
-  return TextButton.styleFrom(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20.0),
-    ),
-    backgroundColor: Colors.red,
+    backgroundColor: color,
     padding: EdgeInsets.all(0),
   );
 }

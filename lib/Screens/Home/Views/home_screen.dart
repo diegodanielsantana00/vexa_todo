@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:vexa_todo/Common/GlobalFunctions.dart';
 import 'package:vexa_todo/Common/Navigator.dart';
+import 'package:vexa_todo/Controller/AdsController.dart';
 import 'package:vexa_todo/Screens/AddTask/Views/add_task_screen.dart';
 import 'package:vexa_todo/Screens/Home/Widget/HomeScreenWidgets.dart';
 
 bool boolAllTask = false;
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  AdsController adsController;
+  HomeScreen(this.adsController, {Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,6 +21,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   DateTime selectDate = DateTime.now();
   HomeScreenWidgets widgetsScreen = HomeScreenWidgets();
+
+  @override
+  void initState() {
+    super.initState();
+    // widget.adsController.ativarAds();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            boolAllTask ? Text("Todas tarefas", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.w700))
+            boolAllTask
+                ? Text("Todas tarefas", style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.w700))
                 : GestureDetector(
                     onTap: () {
                       DatePicker.showDatePicker(context,
@@ -69,7 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () async {
                 bool result = await NavigatorController().navigatorToReturn(context, AddTaskScreen());
                 if (result) {
-                  setState(() {});
+                  widget.adsController.startAds = true;
+                  widget.adsController.mostrarAds();
+                  RestartScreenHotRestart(context);
                 }
               },
               icon: Icon(Icons.add),
