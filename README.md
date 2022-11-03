@@ -25,7 +25,7 @@ flutter run
 
 ## Author
 👤 **Diego Daniel**
-- Twitter: [@diegodanie_](https://instagram.com/diegodanie_)
+- Instagram: [@diegodanie_](https://instagram.com/diegodanie_)
 - Github: [@diegodanielsantana00](https://github.com/diegodanielsantana00)
 
 ## 📝 License
